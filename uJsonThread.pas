@@ -67,7 +67,7 @@ begin
     JsonStream.Position := 0;
     JsonToArray(JsonStream);
   finally
-    JsonStream.Free();
+    JsonStream.Free;
     DM.FDCon.Connected := False;
   end;
 end;
