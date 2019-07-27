@@ -1,9 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <BorlandProject>
-  <Transactions>
-    <Transaction>2019/07/26 20:51:20.759,=C:\Users\Lucas\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
-    <Transaction>2019/07/26 21:12:03.273,C:\Projetos\uTeste.dfm=C:\Users\Lucas\Documents\Embarcadero\Studio\Projects\Unit1.dfm</Transaction>
-    <Transaction>2019/07/26 21:12:03.273,C:\Projetos\uTeste.pas=C:\Users\Lucas\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
-    <Transaction>2019/07/26 21:12:16.351,C:\Projetos\prjJsonTeste.dproj=C:\Users\Lucas\Documents\Embarcadero\Studio\Projects\Project1.dproj</Transaction>
+	<Transactions>
+    <Transaction>2019/07/26 20:51:20.000.759,=C:\Users\Lucas\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
+    <Transaction>2019/07/26 21:12:03.000.273,C:\Users\Lucas\Documents\Embarcadero\Studio\Projects\Unit1.pas=C:\Projetos\uTeste.pas</Transaction>
+    <Transaction>2019/07/26 21:12:03.000.273,C:\Users\Lucas\Documents\Embarcadero\Studio\Projects\Unit1.dfm=C:\Projetos\uTeste.dfm</Transaction>
+    <Transaction>2019/07/26 21:12:16.000.351,C:\Users\Lucas\Documents\Embarcadero\Studio\Projects\Project1.dproj=C:\Projetos\prjJsonTeste.dproj</Transaction>
+    <Transaction>2019/07/27 11:46:20.525,=C:\Projetos\Unit1.pas</Transaction>
+    <Transaction>2019/07/27 11:47:10.258,C:\Projetos\uJsonThread.pas=C:\Projetos\Unit1.pas</Transaction>
   </Transactions>
 </BorlandProject>

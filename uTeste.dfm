@@ -23,7 +23,7 @@ object Form1: TForm1
   object edtLink: TEdit
     Left = 70
     Top = 16
-    Width = 686
+    Width = 563
     Height = 21
     TabOrder = 0
     Text = 
@@ -32,50 +32,59 @@ object Form1: TForm1
   end
   object btnGet: TButton
     Left = 70
-    Top = 43
-    Width = 75
-    Height = 25
-    Caption = 'GET'
+    Top = 38
+    Width = 83
+    Height = 21
+    Caption = 'Start GET'
     TabOrder = 1
     OnClick = btnGetClick
   end
   object mJson: TMemo
     Left = 0
-    Top = 96
+    Top = 296
     Width = 723
-    Height = 380
+    Height = 180
     Align = alBottom
     ScrollBars = ssBoth
     TabOrder = 2
-    ExplicitTop = 112
-    ExplicitWidth = 726
   end
-  object IdHTTP1: TIdHTTP
-    IOHandler = IdSSLIOHandlerSocketOpenSSL1
-    AllowCookies = True
-    ProxyParams.BasicAuthentication = False
-    ProxyParams.ProxyPort = 0
-    Request.ContentLength = -1
-    Request.ContentRangeEnd = -1
-    Request.ContentRangeStart = -1
-    Request.ContentRangeInstanceLength = -1
-    Request.Accept = 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
-    Request.BasicAuthentication = False
-    Request.UserAgent = 'Mozilla/3.0 (compatible; Indy Library)'
-    Request.Ranges.Units = 'bytes'
-    Request.Ranges = <>
-    HTTPOptions = [hoForceEncodeParams]
-    Left = 416
-    Top = 56
+  object mTerminal: TMemo
+    Left = 0
+    Top = 88
+    Width = 723
+    Height = 208
+    Align = alBottom
+    Lines.Strings = (
+      '')
+    TabOrder = 3
   end
-  object IdSSLIOHandlerSocketOpenSSL1: TIdSSLIOHandlerSocketOpenSSL
-    MaxLineAction = maException
-    Port = 0
-    DefaultPort = 0
-    SSLOptions.Mode = sslmUnassigned
-    SSLOptions.VerifyMode = []
-    SSLOptions.VerifyDepth = 0
-    Left = 536
-    Top = 64
+  object pbGetting: TProgressBar
+    Left = 0
+    Top = 71
+    Width = 723
+    Height = 17
+    Align = alBottom
+    TabOrder = 4
+    ExplicitLeft = 2
+    ExplicitTop = 65
+    ExplicitWidth = 719
+  end
+  object btnPauseGet: TButton
+    Left = 159
+    Top = 38
+    Width = 122
+    Height = 21
+    Caption = 'Pause/Resume GET'
+    TabOrder = 5
+    OnClick = btnPauseGetClick
+  end
+  object btnCancelGet: TButton
+    Left = 287
+    Top = 38
+    Width = 94
+    Height = 21
+    Caption = 'Cancel GET'
+    TabOrder = 6
+    OnClick = btnCancelGetClick
   end
 end

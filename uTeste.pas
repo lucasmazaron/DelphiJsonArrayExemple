@@ -6,19 +6,27 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, IdIOHandler,
   IdIOHandlerSocket, IdIOHandlerStack, IdSSL, IdSSLOpenSSL, IdBaseComponent,
-  IdComponent, IdTCPConnection, IdTCPClient, IdHTTP, System.JSON;
+  IdComponent, IdTCPConnection, IdTCPClient, IdHTTP, System.JSON,
+  FireDAC.Stan.Intf, FireDAC.Stan.Option, FireDAC.Stan.Error, FireDAC.UI.Intf,
+  FireDAC.Phys.Intf, FireDAC.Stan.Def, FireDAC.Stan.Pool, FireDAC.Stan.Async,
+  FireDAC.Phys, FireDAC.Phys.PG, FireDAC.Phys.PGDef, FireDAC.VCLUI.Wait,
+  Data.DB, FireDAC.Comp.Client, FireDAC.Comp.UI, FireDAC.Moni.Base,
+  FireDAC.Moni.RemoteClient, FireDAC.Dapt, Vcl.ComCtrls, uJsonThread;
 
 type
   TForm1 = class(TForm)
     edtLink: TEdit;
     Label1: TLabel;
     btnGet: TButton;
-    IdHTTP1: TIdHTTP;
-    IdSSLIOHandlerSocketOpenSSL1: TIdSSLIOHandlerSocketOpenSSL;
     mJson: TMemo;
+    mTerminal: TMemo;
+    pbGetting: TProgressBar;
+    btnPauseGet: TButton;
+    btnCancelGet: TButton;
     procedure btnGetClick(Sender: TObject);
+    procedure btnPauseGetClick(Sender: TObject);
+    procedure btnCancelGetClick(Sender: TObject);
   private
-    procedure JsonToStr(AJsonStream: TStringStream);
     { Private declarations }
   public
     { Public declarations }
@@ -30,57 +38,40 @@ var
 implementation
 
 {$R *.dfm}
-
-procedure TForm1.btnGetClick(Sender: TObject);
-const
-  TOKEN = 'Yoursoft w3nUro1o73QrYN6fwEC7534dF7FtCinFWF5s5xvDw02tcU1oq0'+
-          'G2o3M87U8uBHvfrHG17334QtnEmxS5oIFw7ap15Fq7cAnhu6AH-0BA74B3E'+
-          '0C6A635D45A3429F000FAB8FC05A7B5C';
 var
-  JsonStream: TStringStream;
+  JsonThread: TJsonThread;
+
+
+procedure TForm1.btnCancelGetClick(Sender: TObject);
 begin
-  JsonStream := TStringStream.Create(EmptyStr, TEncoding.UTF8);
+  TerminateThread(JsonThread.Handle, 0);
 
-  try
-    { JsonStream conterá os dados JSON requisitados :}
-    IdHttp1.Request.CustomHeaders.AddValue('Authorization', TOKEN);
-    idHttp1.Get(edtLink.Text, JsonStream);
-    JsonStream.Position := 0;
-    JsonToStr(JsonStream);
-  finally
-    JsonStream.Free();
-  end;
-
+  mTerminal.Clear;
+  mTerminal.Lines.Add('Thread Cancelada!');
+  pbGetting.Position := 0;
 end;
 
-procedure TForm1.JsonToStr(AJsonStream: TStringStream);
-var
-  JsonObj: TJSONObject;
-  JsonArr: TJSONArray;
-  JsonValue: TJSONValue;
-  Item: TJSONValue;
+procedure TForm1.btnGetClick(Sender: TObject);
 begin
-  JsonObj := TJsonObject.Create;
-  try
-    JsonObj.Parse(AJsonStream.Bytes, 0);
-    mJson.Lines.LoadFromStream(AJsonStream, TEncoding.UTF8);
+  if not Assigned(JsonThread) then
+  begin
+    JsonThread := TJsonThread.Create(edtLink.Text, mTerminal, mJson, pbGetting);
+    JsonThread.Start;
+  end;
+end;
 
-    JsonArr := JsonObj.ParseJSONValue(TEncoding.UTF8.GetBytes(AJsonStream.DataString), 0) as TJSONArray;
-    for JsonValue in JsonArr do
+procedure TForm1.btnPauseGetClick(Sender: TObject);
+begin
+  if Assigned(JsonThread) then
+  begin
+    if JsonThread.Suspended then
     begin
-      ShowMessage(JsonValue.ToString);
-
-      JsonObj := (JsonValue as TJSONObject);
-      Item := JsonObj.GetValue('pedi_id');
-
-      ShowMessage(Item.ToString);
-//      for Item in TJSONArray(JsonValue) do
-//      begin
-//        ShowMessage(Format('%s : %s',[TJSONPair(Item).JsonString.Value, TJSONPair(Item).JsonValue.Value]));
-//      end;
+     JsonThread.Suspended := False;
+    end
+    else
+    begin
+     JsonThread.Suspended := True;
     end;
-  finally
-    JsonObj.Free;
   end;
 end;
 

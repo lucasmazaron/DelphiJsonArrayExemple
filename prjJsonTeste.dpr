@@ -2,7 +2,8 @@ program prjJsonTeste;
 
 uses
   Vcl.Forms,
-  uTeste in 'uTeste.pas' {Form1};
+  uTeste in 'uTeste.pas' {Form1},
+  uJsonThread in 'uJsonThread.pas';
 
 {$R *.res}
 
