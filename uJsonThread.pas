@@ -23,6 +23,7 @@ type
 
     function ExisteRegistro(const ACodPed: String): Boolean;
     procedure JsonToArray(AJsonStream: TStringStream);
+    procedure InsereDadosPedido(AJsonObj: TJsonObject);
     { Private declarations }
   public
     constructor Create(AUrl: String; ATerminal, AJson: TMemo; AProgressBar: TProgressBar); reintroduce;
@@ -34,6 +35,9 @@ type
 implementation
 
 { TJsonThread }
+
+var
+  IsPedidoExistente: Boolean;
 
 constructor TJsonThread.Create(AUrl: String; ATerminal, AJson: TMemo; AProgressBar: TProgressBar);
 begin
@@ -96,11 +100,12 @@ var
   JsonObj: TJSONObject;
   JsonArr: TJSONArray;
   JsonValue: TJSONValue;
+  Item: TJSONValue;
 begin
   JsonObj := TJsonObject.Create;
   try
-    JsonObj.Parse(AJsonStream.Bytes, 0);
-    JsonArr := JsonObj.ParseJSONValue(TEncoding.UTF8.GetBytes(AJsonStream.DataString), 0) as TJSONArray;
+//    JsonObj.Parse(AJsonStream.Bytes, 0);
+    JsonArr := TJSONObject.ParseJSONValue(TEncoding.UTF8.GetBytes(AJsonStream.DataString), 0) as TJSONArray;
 
     FJson.Lines.Text := JsonArr.ToString;
     FProgressBar.Max := JsonArr.Count;
@@ -109,8 +114,16 @@ begin
 //      ShowMessage(JsonValue.ToString);
 
       JsonObj := (JsonValue as TJSONObject);
+      Item    := JsonObj.GetValue('pedi_id');
 
-      Self.Synchronize(JsonObj.GetValue('pedi_id'));
+      IsPedidoExistente := ExisteRegistro(Item.ToString);
+
+      if not IsPedidoExistente then
+      begin
+        InsereDadosPedido(JsonObj);
+      end;
+
+      Self.Synchronize(Item);
       Self.Sleep(1);
 
 //      ShowMessage(Item.ToString);
@@ -125,9 +138,58 @@ begin
   end;
 end;
 
+procedure TJsonThread.InsereDadosPedido(AJsonObj: TJsonObject);
+var
+  QryLeitura: TFDQuery;
+  InsertFields, InsertValues: String;
+  Item: TJSONValue;
+begin
+
+  InsertFields := ' insert into public.intpedid (nnumeroparce';
+  InsertValues := ' values (1';
+
+  QryLeitura := TFDQuery.Create(nil);
+  QryLeitura.Connection := DM.FDCon;
+
+  try
+    QryLeitura.Open('select * '+
+                    '  from intleitu ' +
+                    ' where ctblintleitu = ' + QuotedStr('intpedid'));
+
+    QryLeitura.First;
+    while not QryLeitura.Eof do
+    begin
+      InsertFields := InsertFields + ', ' + QryLeitura.FieldByName('ccmpintleitu').AsString;
+
+      Item := AJsonObj.GetValue(QryLeitura.FieldByName('ccmpextleitu').AsString);
+
+      if Assigned(Item) then
+      begin
+        if QryLeitura.FieldByName('ctpcpinleitu').AsString = 'numeric' then
+        begin
+          InsertValues := InsertValues + ', ' + Item.ToString;
+        end
+        else
+        begin
+          InsertValues := InsertValues + ', ' + QuotedStr(Item.ToString);
+        end;
+      end;
+
+      QryLeitura.Next;
+    end;
+
+    InsertFields := InsertFields + ')';
+    InsertValues := InsertValues + ')';
+
+    showmessage(InsertFields+InsertValues);
+  finally
+    QryLeitura.Free;
+  end;
+end;
+
 procedure TJsonThread.Synchronize(AItem: TJSONValue);
 begin
-  if ExisteRegistro(AItem.ToString) then
+  if IsPedidoExistente then
   begin
     FTerminal.Lines.Add(' Pedido ' + AItem.ToString + ' JÁ importado!');
   end
