@@ -80,8 +80,6 @@ function TJsonThread.ExisteRegistro(const ACodPed: String): Boolean;
 var
   Qry: TFDQuery;
 begin
-  Result := False;
-
   Qry := TFDQuery.Create(nil);
   Qry.Connection := DM.FDCon;
   try
@@ -107,7 +105,8 @@ begin
 //    JsonObj.Parse(AJsonStream.Bytes, 0);
     JsonArr := TJSONObject.ParseJSONValue(TEncoding.UTF8.GetBytes(AJsonStream.DataString), 0) as TJSONArray;
 
-    FJson.Lines.Text := JsonArr.ToString;
+    FJson.Lines.Text := ' Há ' + IntToStr(JsonArr.Count) + ' pedidos a serem tratados!' + sLineBreak;
+    FJson.Lines.Text := FJson.Lines.Text + JsonArr.ToString;
     FProgressBar.Max := JsonArr.Count;
     for JsonValue in JsonArr do
     begin
