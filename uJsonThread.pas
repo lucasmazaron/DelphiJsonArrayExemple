@@ -118,13 +118,14 @@ begin
 
       IsPedidoExistente := ExisteRegistro(Item.ToString);
 
+      Self.Synchronize(Item);
+
       if not IsPedidoExistente then
       begin
         InsereDadosPedido(JsonObj);
       end;
 
-      Self.Synchronize(Item);
-      Self.Sleep(1);
+//      Self.Sleep(1);
 
 //      ShowMessage(Item.ToString);
 //      for Item in TJSONArray(JsonValue) do
@@ -181,7 +182,9 @@ begin
     InsertFields := InsertFields + ')';
     InsertValues := InsertValues + ')';
 
-    showmessage(InsertFields+InsertValues);
+    FTerminal.Lines.Add('-----------------------');
+    FTerminal.Lines.Add(InsertFields+InsertValues);
+    FTerminal.Lines.Add('-----------------------');
   finally
     QryLeitura.Free;
   end;

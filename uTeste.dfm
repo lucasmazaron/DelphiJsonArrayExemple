@@ -56,6 +56,7 @@ object Form1: TForm1
     Align = alBottom
     Lines.Strings = (
       '')
+    ScrollBars = ssBoth
     TabOrder = 3
   end
   object pbGetting: TProgressBar
@@ -65,9 +66,6 @@ object Form1: TForm1
     Height = 17
     Align = alBottom
     TabOrder = 4
-    ExplicitLeft = 2
-    ExplicitTop = 65
-    ExplicitWidth = 719
   end
   object btnPauseGet: TButton
     Left = 159
